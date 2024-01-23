@@ -3,6 +3,7 @@ import { Snackbar } from '@mui/joy';
 import { RootState, store } from '../store';
 import './Notification.scss';
 import { useDispatch, useSelector } from 'react-redux';
+import { openNotification } from '../slices/notificationSlice';
 
 interface MsgObj {
   message: string;
@@ -12,8 +13,9 @@ function Notification() {
   const [message, setMessage] = useState<string>("");
   const api = useSelector((state: RootState) => state.api);
   const dispatch = useDispatch();
-
+  const selected = useSelector(openNotification);
   
+  console.log('selected', selected);
   // useEffect(() => {
   //   // if (api.mutations.error) {
   //   //   const msg = api.mutations.error.data as MsgObj; 
