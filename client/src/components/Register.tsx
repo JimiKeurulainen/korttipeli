@@ -2,57 +2,84 @@ import './Login.scss'
 import { useEffect, useState } from 'react';
 import { useRegisterUserMutation } from '../slices/apiSlice';
 import loadingIcon from '../assets/loadingIcon.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { setParameter } from '../slices/formSlice';
+import { RootState } from '../store';
+import { RegisterForm } from '../slices/formSlice';
+import axios from 'axios';
 
-interface RegisterForm {
-  username: string;
-  password: string;
-  confirmation: string;
-  email: string;
-  phone: string;
-  verification: string;
+interface Country {
+  name: {
+    common: string;
+  }
+  idd: { 
+    root: string; 
+    suffixes:  Array<string>;
+  }
+  flag: string;
+  independent: boolean;
 }
-export interface DispatchForm {
-  username: string;
-  password: string;
-  email: string;
-  phone?: string;
-  verification: string;
+interface TelData {
+  name: string;
+  idd: string;
+  flag: string;
 }
 
-const initialForm = {
-  username: "",
-  password: "",
-  confirmation: "",
-  email: "",
-  phone: "",
-  verification: "email"
+const initialTel: TelData = {
+  name: '',
+  idd: '+123',
+  flag: ''
 }
 
 function Register() {
-  const [form, setForm] = useState<RegisterForm>(initialForm);
+  // const [form, setForm] = useState<RegisterForm>(initialForm);
+  const [telData, setTelData] = useState<TelData[]>([initialTel]);
+  const [activeTel, setActiveTel] = useState<TelData>(initialTel);
+  const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [registerUser, result] = useRegisterUserMutation();
+  const dispatch = useDispatch();
+  const form = useSelector((state: RootState) => state.validator);
 
+  useEffect(() => {
+    axios.get('https://restcountries.com/v3.1/all?fields=flag,name,idd,independent').then(res => {
+      const filtered = res.data.filter((country: Country) => country.independent).map((country: Country) => {
+          return {
+            name: country.name.common,
+            idd: country.idd.root + country.idd.suffixes[0],
+            flag: country.flag
+          }
+      });
+      filtered.sort((a: Country, b: Country) => {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
+      setTelData(filtered);
+    });
+  }, []);
+
+  const handleOpen = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    setOpenSelect(openSelect => !openSelect);
+  }
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setForm((state) => {
-			return {
-				...state,
-				[event.target.name]:event.target.value
-			}
-		})
+    dispatch(setParameter({
+      name: event.target.name,
+      value: event.target.value
+    }))
   }
   const onSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    const tempForm: any = { ...form }; 
+    const tempForm: RegisterForm = { ...form }; 
     delete tempForm.confirmation;
-    const dispatchForm: DispatchForm = tempForm;
 
-    registerUser(dispatchForm);
+    registerUser(tempForm);
   }
-
-  // useEffect(() => {
-  //   console.log('result register', result);
-  // }, [result])
   
   return (
     <div className='LoginContainer'>
@@ -60,18 +87,38 @@ function Register() {
         <h1>Register</h1>
         <form onSubmit={onSubmit}>
           <label htmlFor="username">Username:</label>
-          <input type="text" name="username" onChange={onChange} value={form.username}/>
+          <input type="text" name="username" onChange={onChange} value={form.username.value}/>
+          <small id="usernameError">{form.username.message}</small>
 
           <label htmlFor="password">Password:</label>
-          <input type="password" name="password" onChange={onChange} value={form.password}/>
+          <input type="password" name="password" onChange={onChange} value={form.password.value}/>
+          <small id="passwordError">{form.password?.message}</small>
           <label htmlFor="confirmation">Confirm Password:</label>
-          <input type="password" name="confirmation" onChange={onChange} value={form.confirmation}/>
+          <input type="password" name="confirmation" onChange={onChange} value={form.confirmation?.value}/>
+          <small id="confirmationError">{form.confirmation?.message}</small>
 
           <label htmlFor="email">Email:</label>
-          <input type="email" name="email" onChange={onChange} value={form.email}/>
+          <input type="email" name="email" onChange={onChange} value={form.email.value}/>
+          <small id="emailError">{form.email.message}</small>
 
           <label htmlFor="phone">Phone Number:</label>
-          <input type="phone" name="phone" onChange={onChange} value={form.phone}/>
+          <span className='PhoneContainer'>
+            <button className='OpenSelection' onClick={handleOpen}>
+              {activeTel.flag} {activeTel.idd}
+            </button>
+            {openSelect && <div className='TelSelection'>
+              {telData.map(country => (
+                <span className='Option' key={country.name} onClick={(e) => {
+                  handleOpen(e); 
+                  setActiveTel(country);
+                }}>
+                  {country.flag} {country.name} {country.idd} 
+                </span>
+              ))}
+            </div>}
+            <input type="phone" name="phone" onChange={onChange} value={form.phone?.value}/>
+          </span>
+          <small id="phoneError">{form.phone?.message}</small>
 
           <label>Preferred Account Verification Method:</label>
           <span>
@@ -83,7 +130,6 @@ function Register() {
           <button type="submit">{result.isLoading ? <img src={loadingIcon} /> : 'Register'}
           </button>
           <a href="login">Already have an account?</a>
-          {/* <small>{result.data && result.data.message}</small> */}
         </form>
         <h2 className='Logo'>Template</h2>
       </div>

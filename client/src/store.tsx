@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from './slices/counterSlice'
 import notificationReducer from './slices/notificationSlice';
+import validatorReducer from './slices/formSlice';
 import { api } from './slices/apiSlice'
 
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    validator: validatorReducer,
     notification: notificationReducer,
     [api.reducerPath]: api.reducer,
   },

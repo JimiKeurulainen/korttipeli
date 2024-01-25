@@ -3,7 +3,6 @@ import Card from "./Card";
 
 export default class User {
   #username: string = "";
-  #password: string = "";
   #email: string = "";
   #phone: string = "";
 
@@ -14,7 +13,6 @@ export default class User {
 
   constructor(
     username: string, 
-    password: string, 
     email: string, 
     phone: string, 
     decks?: Array<Deck>, 
@@ -24,7 +22,6 @@ export default class User {
     ) 
   {
     this.#username = username;
-    this.#password = password;
     this.#email = email;
     this.#phone = phone;
     decks && (this.#decks = decks);
@@ -38,12 +35,6 @@ export default class User {
   }
   getusername = () => {
     return this.#username;
-  }
-  setpassword = (password: string) => {
-    this.#password = password
-  }
-  getpassword = () => {
-    return this.#password;
   }
   // login = (username: string, password: string, setLogin: void) => {
   //   axios.get('server').then((res: User) => {

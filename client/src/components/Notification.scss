@@ -1,2 +1,40 @@
-@use "../themes/themes.scss";
-@include themes.default();
+// @use "../themes/themes.scss";
+// @include themes.default();
+
+.Snackbar {
+  min-width: min-content;
+  width: 20%;
+  max-width: 60%;
+  height: min-content;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: white;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 900;
+  transform: translateY(-200%);
+  transition: all 0.5s;
+}
+
+.open {
+  transform: translateY(0%);
+}
+.close {
+  transform: translateY(-200%);
+}
+.success {
+  background-color: green;
+}
+.danger {
+  background-color: red;
+}
+
+@keyframes openSnackbar {
+  from {
+    transform: translateY(-200%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}

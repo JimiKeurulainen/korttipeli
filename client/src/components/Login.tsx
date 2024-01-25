@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../store';
-import {} from '../slices/loginSlice';
+import {} from '../slices/formSlice';
 import './Login.scss'
 import { useState } from 'react';
 

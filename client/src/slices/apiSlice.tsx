@@ -1,20 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { LoginState } from "./loginSlice"
-import { LoginForm } from "../components/Login"
-import { DispatchForm } from "../components/Register"
+import { RegisterForm } from "./formSlice";
 import User from "../models/User"
-import { store } from "../store"
 import { openNotification } from "./notificationSlice"
 
-interface ReturnJSON {
+interface LoginState {
+  username: string;
+  password: string;
+}
+interface RegisterResponse {
   message: string;
   error?: any;
 }
 
-interface CustomError {
-  isError: boolean;
+export interface ApiResponse {
   isSuccess: boolean;
-  error: {
+  message: string;
+  error?: {
     data: {
       message: string;
     }
@@ -31,7 +32,7 @@ export const api = createApi({
         body,
       }),
     }),
-    registerUser: build.mutation<ReturnJSON, DispatchForm>({
+    registerUser: build.mutation<RegisterResponse, RegisterForm>({
       query: (body) => ({
         url: 'register',
         method: 'POST',
@@ -41,17 +42,21 @@ export const api = createApi({
         const { dispatch, queryFulfilled } = res;
         try {
           const { data } = await queryFulfilled;
-          console.log('queryfulfilled', data);
-          // dispatch(openNotification(data.message))
+          dispatch(openNotification({
+            isSuccess: true,
+            message: data.message,
+          }))
         }
         catch (err) {
-          console.log('error', err);
-          const error = err as CustomError;
-          // if ('status' in error.error) {
-          //   dispatch(error.error.data)
-          // }
+          const error = err as ApiResponse;
+          if ('status' in error.error!) {
+            dispatch(openNotification({
+              isSuccess: false, 
+              message: error.error.data.message
+            }))
+          }
           // else {
-          //   setMessage(result.error.message!);
+            
           // }
         }
       },

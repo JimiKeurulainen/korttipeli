@@ -16,6 +16,8 @@
     "@mui/joy": "^5.0.0-beta.23",
     "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.6.5",
+    "calling-codes": "^2.0.0",
+    "mui-tel-input": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.0",
