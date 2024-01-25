@@ -7,28 +7,24 @@ import { closeNotification } from '../slices/notificationSlice';
 
 function Notification() {
   const dispatch = useDispatch();
+  const notification = useSelector((state: RootState)  => state.notification); 
 
-  
-  // useEffect(() => {
-  //   // if (api.mutations.error) {
-  //   //   const msg = api.mutations.error.data as MsgObj; 
-  //   //   setMessage(msg.message);
-  //   // }
-  //   // else if (api.mutations.data) {
-  //   //   // const msg = api.mutations.data as MsgObj; 
-  //   //   setMessage(JSON.stringify(api.mutations.data));
-  //   // }
-  //   console.log('api', api);
-  // }, [api.mutations]);
+  useEffect(() => {
+    const snackbar = document.getElementsByClassName('Snackbar')[0]?.classList!;
 
-  // useEffect(() => {
-  //   console.log('message', message);
-  //   // if (message !== '') {
-  //   //   const snackbars = Array.from(document.getElementsByClassName('MuiSnackbar-root') as HTMLCollectionOf<HTMLElement>);
-  //   //   result.isError ? snackbars[0].classList.add('danger') : snackbars[0].classList.add('success');
-  //   //   console.log('snackbars', snackbars);
-  //   // }
-  // }, [message]);
+    if (notification.open) {
+      snackbar.remove('close');
+      snackbar.add('open');
+      snackbar.add(notification.class!);
+
+      setTimeout(() => {
+        dispatch(closeNotification());
+        snackbar.remove(notification.class!);
+        snackbar.remove('open');
+        snackbar.add('close');
+      }, 2500);
+    }
+  }, [notification]);
   
   return (
     <div className='Snackbar'>
