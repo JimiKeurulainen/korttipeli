@@ -74,11 +74,7 @@ function Register() {
   }
   const onSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
-
-    const tempForm: RegisterForm = { ...form }; 
-    delete tempForm.confirmation;
-
-    registerUser(tempForm);
+    dispatch(sendForm());
   }
   
   return (

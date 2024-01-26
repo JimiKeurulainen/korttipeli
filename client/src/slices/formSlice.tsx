@@ -1,4 +1,4 @@
-import { createSlice, AnyAction, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ParameterValues {
   value: string;
@@ -164,6 +164,12 @@ export const validatorSlice = createSlice({
           return state = tempState;
       }
     },
+    sendForm: (state) => {
+      const invalid = {...state};
+      for (const prop of invalid) {
+        
+      }
+    }
   },
 });
 
