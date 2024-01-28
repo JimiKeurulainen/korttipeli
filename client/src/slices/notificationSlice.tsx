@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import type { AnyAction, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { ApiResponse } from './apiSlice';
 
 export interface NotificationState {
@@ -7,18 +7,18 @@ export interface NotificationState {
   class?: string;
   open: boolean;
 }
-
 export const initialState: NotificationState = {
   message: '',
   class: 'accent',
   open: false
 }
 
+
 export const notificationSlice = createSlice({
   name: 'notification',
   initialState,
   reducers: {
-    openNotification: (state, { payload }: PayloadAction<ApiResponse>) => {
+    openNotificationFromApi: (state, { payload }: PayloadAction<ApiResponse>) => {
       const tempState = {...state};
 
       tempState.message = payload.message;
@@ -26,6 +26,9 @@ export const notificationSlice = createSlice({
       tempState.open = true;
 
       return tempState;
+    },
+    openNotification: (state, { payload }: PayloadAction<NotificationState>) => {
+      return 
     },
     closeNotification: (state) => {
       state = {...initialState};
@@ -35,6 +38,6 @@ export const notificationSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { openNotification, closeNotification } = notificationSlice.actions
+export const { openNotificationFromApi, openNotification, closeNotification } = notificationSlice.actions
 
 export default notificationSlice.reducer

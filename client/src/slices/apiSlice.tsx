@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RegisterForm } from "./formSlice";
 import User from "../models/User"
-import { openNotification } from "./notificationSlice"
+import { openNotificationFromApi } from "./notificationSlice"
 
 interface LoginState {
   username: string;
@@ -42,7 +42,7 @@ export const api = createApi({
         const { dispatch, queryFulfilled } = res;
         try {
           const { data } = await queryFulfilled;
-          dispatch(openNotification({
+          dispatch(openNotificationFromApi({
             isSuccess: true,
             message: data.message,
           }))
@@ -50,7 +50,7 @@ export const api = createApi({
         catch (err) {
           const error = err as ApiResponse;
           if ('status' in error.error!) {
-            dispatch(openNotification({
+            dispatch(openNotificationFromApi({
               isSuccess: false, 
               message: error.error.data.message
             }))

@@ -36,6 +36,9 @@
       label, a {
         font-size: 0.9em;
       }
+      b {
+        color: themes.$dangerText;
+      }
       input {
         padding: 8px;
         border: 0;

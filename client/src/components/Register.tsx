@@ -1,11 +1,9 @@
 import './Login.scss'
 import { useEffect, useState } from 'react';
-import { useRegisterUserMutation } from '../slices/apiSlice';
 import loadingIcon from '../assets/loadingIcon.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { setParameter } from '../slices/formSlice';
 import { RootState } from '../store';
-import { RegisterForm } from '../slices/formSlice';
 import axios from 'axios';
 
 interface Country {
@@ -36,9 +34,8 @@ function Register() {
   const [telData, setTelData] = useState<TelData[]>([initialTel]);
   const [activeTel, setActiveTel] = useState<TelData>(initialTel);
   const [openSelect, setOpenSelect] = useState<boolean>(false);
-  const [registerUser, result] = useRegisterUserMutation();
   const dispatch = useDispatch();
-  const form = useSelector((state: RootState) => state.validator);
+  const form = useSelector((state: RootState) => state.form);
 
   useEffect(() => {
     axios.get('https://restcountries.com/v3.1/all?fields=flag,name,idd,independent').then(res => {
@@ -82,18 +79,18 @@ function Register() {
       <div className='FormContainer'>
         <h1>Register</h1>
         <form onSubmit={onSubmit}>
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="username">Username: <b>*</b></label>
           <input type="text" name="username" onChange={onChange} value={form.username.value}/>
           <small id="usernameError">{form.username.message}</small>
 
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">Password: <b>*</b></label>
           <input type="password" name="password" onChange={onChange} value={form.password.value}/>
           <small id="passwordError">{form.password?.message}</small>
-          <label htmlFor="confirmation">Confirm Password:</label>
+          <label htmlFor="confirmation">Confirm Password: <b>*</b></label>
           <input type="password" name="confirmation" onChange={onChange} value={form.confirmation?.value}/>
           <small id="confirmationError">{form.confirmation?.message}</small>
 
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email: <b>*</b></label>
           <input type="email" name="email" onChange={onChange} value={form.email.value}/>
           <small id="emailError">{form.email.message}</small>
 
@@ -116,7 +113,7 @@ function Register() {
           </span>
           <small id="phoneError">{form.phone?.message}</small>
 
-          <label>Preferred Account Verification Method:</label>
+          <label>Preferred Account Verification Method: <b>*</b></label>
           <span>
             <label htmlFor="radio1">Email</label>
             <input type="radio" name="verification" id="radio1" value="email" onChange={onChange}/>

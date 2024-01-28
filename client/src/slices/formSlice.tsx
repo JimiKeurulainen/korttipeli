@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { useDispatch } from 'react-redux';
+import { useRegisterUserMutation } from './apiSlice';
 
 interface ParameterValues {
   value: string;
@@ -37,7 +39,9 @@ function addError(name: string, isValid: boolean) {
   isValid ? element?.remove('OpenError') : element?.add('OpenError');
 }
 
-export const validatorSlice = createSlice({
+const [registerUser, result] = useRegisterUserMutation();
+
+export const formSlice = createSlice({
   name: 'counter',
   initialState,
   reducers: {
@@ -165,9 +169,15 @@ export const validatorSlice = createSlice({
       }
     },
     sendForm: (state) => {
-      const invalid = {...state};
-      for (const prop of invalid) {
-        
+      let isValidForm = true;
+      Object.values(state).forEach(value => {
+        !value.isValid && (isValidForm = false);
+      });
+
+      if (isValidForm) {
+        const dispatchForm = { ...state };
+        delete dispatchForm.confirmation;
+        registerUser(dispatchForm);
       }
     }
   },
@@ -176,6 +186,7 @@ export const validatorSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { 
   setParameter,
-} = validatorSlice.actions
+  sendForm
+} = formSlice.actions
 
-export default validatorSlice.reducer
+export default formSlice.reducer
